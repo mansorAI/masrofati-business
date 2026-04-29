@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مصروفاتي — حساب الأعمال</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117;
+      --card: #1a1d27;
+      --border: #2a2d3a;
+      --accent: #43e97b;
+      --accent2: #38bdf8;
+      --text: #e8e8f0;
+      --muted: #8888aa;
+      --success: #43e97b;
+      --error: #ff4d6d;
+    }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .container { width: 100%; max-width: 420px; }
+    .logo { text-align: center; margin-bottom: 32px; }
+    .logo h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .logo .biz-badge {
+      display: inline-block;
+      background: rgba(67,233,123,0.12);
+      border: 1px solid rgba(67,233,123,0.3);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-top: 4px;
+    }
+    .logo p { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .tab.active { background: var(--accent); color: #0f1117; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent); }
+    input[type="email"],
+    input[type="password"] { direction: ltr; text-align: left; }
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: #0f1117;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .msg {
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: none;
+    }
+    .msg.error { background: rgba(255,77,109,0.12); color: var(--error); border: 1px solid rgba(255,77,109,0.3); display: block; }
+    .msg.success { background: rgba(67,233,123,0.12); color: var(--success); border: 1px solid rgba(67,233,123,0.3); display: block; }
+    .forgot { text-align: center; margin-top: 12px; }
+    .forgot a, .back-link { color: var(--accent); text-decoration: none; font-size: 0.88rem; }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(15,17,23,0.3);
+      border-top-color: #0f1117;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .spinner.show { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .back-row { text-align: center; margin-top: 14px; }
+    .subtitle { color: var(--muted); font-size: 0.88rem; text-align: center; margin-bottom: 18px; }
+    .personal-link {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .personal-link a { color: var(--muted); text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <h1>🏪 مصروفاتي</h1>
+      <div class="biz-badge">نظام الأعمال</div>
+      <p>إدارة المبيعات والمشتريات والخزنة</p>
+    </div>
+    <div class="card">
+      <div class="tabs" id="mainTabs">
+        <button class="tab active" onclick="showTab('login')">تسجيل الدخول</button>
+        <button class="tab" onclick="showTab('register')">حساب جديد</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm">
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="loginEmail" placeholder="example@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn" onclick="doLogin()" id="loginBtn">
+          دخول
+          <span class="spinner" id="loginSpinner"></span>
+        </button>
+        <div class="forgot">
+          <a href="#" onclick="showForgot(); return false;">نسيت كلمة المرور؟</a>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" style="display:none">
+        <div class="form-group">
+          <label>اسم النشاط التجاري</label>
+          <input type="text" id="regName" placeholder="مثال: مقهى الفجر، شركة النور...">
+        </div>
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="regEmail" placeholder="example@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="regPass" placeholder="8 أحرف على الأقل" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label>تأكيد كلمة المرور</label>
+          <input type="password" id="regPass2" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password">
+        </div>
+        <button class="btn" onclick="doRegister()" id="regBtn">
+          إنشاء حساب أعمال
+          <span class="spinner" id="regSpinner"></span>
+        </button>
+      </div>
+
+      <!-- Forgot Password -->
+      <div id="forgotForm" style="display:none">
+        <p class="subtitle">سنرسل رابط إعادة تعيين كلمة المرور على بريدك</p>
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="forgotEmail" placeholder="example@email.com">
+        </div>
+        <button class="btn" onclick="doForgot()" id="forgotBtn">
+          إرسال الرابط
+          <span class="spinner" id="forgotSpinner"></span>
+        </button>
+        <div class="back-row">
+          <a href="#" class="back-link" onclick="showTab('login'); return false;">← العودة لتسجيل الدخول</a>
+        </div>
+      </div>
+
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="personal-link">
+      حساب شخصي / عائلي؟ <a href="index.html">سجّل دخولك من هنا</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://xnfzttjnwkfznxvohngy.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_nUDdwuF5r5KdA78CYm2hGA_R5gvLzha';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // تحقق هل المستخدم ينتمي لنظام الأعمال
+    async function isBizUser(userId) {
+      const { data: prof } = await sb.from('profiles').select('account_type').eq('id', userId).single();
+      if (prof?.account_type === 'business') return true;
+      // موظف في مجموعة أعمال؟
+      const { data: memberships } = await sb
+        .from('group_members')
+        .select('groups(owner_id)')
+        .eq('user_id', userId);
+      const ownerIds = [...new Set((memberships || []).map(m => m.groups?.owner_id).filter(Boolean))];
+      if (!ownerIds.length) return false;
+      const { data: bizOwners } = await sb
+        .from('profiles').select('id')
+        .in('id', ownerIds).eq('account_type', 'business').limit(1);
+      return bizOwners && bizOwners.length > 0;
+    }
+
+    // إذا مسجّل دخول بالفعل — تحقق وروّح
+    sb.auth.getSession().then(async ({ data }) => {
+      if (!data.session) return;
+      const biz = await isBizUser(data.session.user.id);
+      if (biz) window.location.href = 'business.html';
+      else window.location.href = 'index.html';
+    });
+
+    function showTab(tab) {
+      document.querySelectorAll('.tab').forEach((t, i) => {
+        t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+      });
+      document.getElementById('loginForm').style.display    = tab === 'login'    ? '' : 'none';
+      document.getElementById('registerForm').style.display = tab === 'register' ? '' : 'none';
+      document.getElementById('forgotForm').style.display   = 'none';
+      document.getElementById('mainTabs').style.display     = '';
+      clearMsg();
+    }
+
+    function showForgot() {
+      document.getElementById('loginForm').style.display  = 'none';
+      document.getElementById('forgotForm').style.display = '';
+      document.getElementById('mainTabs').style.display   = 'none';
+      clearMsg();
+    }
+
+    function showMsg(text, type = 'error') {
+      const el = document.getElementById('msg');
+      el.textContent = text;
+      el.className = 'msg ' + type;
+    }
+    function clearMsg() { document.getElementById('msg').className = 'msg'; }
+
+    function setLoading(btnId, spinnerId, on) {
+      document.getElementById(btnId).disabled = on;
+      document.getElementById(spinnerId).classList.toggle('show', on);
+    }
+
+    async function doLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPass').value;
+      if (!email || !pass) return showMsg('أدخل البريد وكلمة المرور');
+      setLoading('loginBtn', 'loginSpinner', true);
+      clearMsg();
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+      setLoading('loginBtn', 'loginSpinner', false);
+      if (error) {
+        showMsg(error.message.includes('Invalid') ? 'البريد أو كلمة المرور غير صحيحة' : error.message);
+        return;
+      }
+      const biz = await isBizUser(data.user.id);
+      if (biz) {
+        window.location.href = 'business.html';
+      } else {
+        await sb.auth.signOut();
+        showMsg('هذا حساب شخصي — ادخل من صفحة النظام الشخصي');
+      }
+    }
+
+    async function doRegister() {
+      const name  = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const pass  = document.getElementById('regPass').value;
+      const pass2 = document.getElementById('regPass2').value;
+      if (!name)           return showMsg('أدخل اسم النشاط التجاري');
+      if (!email)          return showMsg('أدخل البريد الإلكتروني');
+      if (pass.length < 8) return showMsg('كلمة المرور 8 أحرف على الأقل');
+      if (pass !== pass2)  return showMsg('كلمتا المرور غير متطابقتين');
+      setLoading('regBtn', 'regSpinner', true);
+      clearMsg();
+      const { data, error } = await sb.auth.signUp({
+        email, password: pass,
+        options: { data: { name, account_type: 'business' } }
+      });
+      setLoading('regBtn', 'regSpinner', false);
+      if (error) {
+        showMsg(error.message);
+      } else {
+        showMsg('تم إنشاء حساب الأعمال! تحقق من بريدك لتأكيد الحساب.', 'success');
+      }
+    }
+
+    async function doForgot() {
+      const email = document.getElementById('forgotEmail').value.trim();
+      if (!email) return showMsg('أدخل بريدك الإلكتروني');
+      setLoading('forgotBtn', 'forgotSpinner', true);
+      clearMsg();
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/business.html'
+      });
+      setLoading('forgotBtn', 'forgotSpinner', false);
+      if (error) showMsg(error.message);
+      else showMsg('تم إرسال الرابط على بريدك الإلكتروني', 'success');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      if (document.getElementById('forgotForm').style.display !== 'none') doForgot();
+      else if (document.getElementById('registerForm').style.display !== 'none') doRegister();
+      else doLogin();
+    });
+  </script>
+</body>
+</html>
